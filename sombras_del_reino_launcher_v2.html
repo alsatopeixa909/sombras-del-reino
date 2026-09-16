@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Sombras del Reino — Launcher</title>
+<style>
+*{box-sizing:border-box}body{margin:0;min-height:100vh;font-family:Georgia,serif;color:#f4eadb;background:linear-gradient(135deg,#07080a,#26110d 55%,#080808);display:flex;align-items:center;justify-content:center;padding:24px}
+.card{width:min(920px,96vw);padding:42px 34px;text-align:center;border:1px solid #7e2d19;border-radius:18px;background:rgba(10,8,8,.9);box-shadow:0 0 45px #000}
+.crown{font-size:42px}.title{font-size:clamp(40px,7vw,74px);font-weight:900;line-height:.9;text-shadow:3px 4px 0 #32130c}.title span{display:block;font-size:.5em;margin-top:10px}.tag{letter-spacing:3px;margin:22px 0;color:#d8c5ad}
+.panel{max-width:620px;margin:24px auto 0;text-align:left;background:#121011;border:1px solid #49332b;border-radius:14px;padding:22px}
+label{display:block;margin:12px 0 6px;color:#d8c5ad}input{width:100%;padding:13px;border-radius:8px;border:1px solid #57433a;background:#090909;color:white;font-size:16px}
+button{margin-top:16px;border:0;border-radius:9px;padding:14px 25px;font-size:18px;font-weight:bold;color:white;background:linear-gradient(#d94a20,#7e1d10);cursor:pointer}
+button:disabled{opacity:.45;cursor:not-allowed}.secondary{background:#292326;margin-left:8px}.hidden{display:none}.status{margin-top:16px;padding:12px;border-radius:8px;background:#1b1717;color:#cdbca7}.update{display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap}.small{font-size:14px;color:#9e9084}.ok{color:#79d48a}.warn{color:#ffad72}
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="crown">♛</div>
+  <div class="title">SOMBRAS <span>DEL REINO</span></div>
+  <div class="tag">LAUNCHER OFICIAL · MODO DESARROLLO</div>
+
+  <section id="login" class="panel">
+    <h2>Iniciar sesión</h2>
+    <form id="loginForm">
+      <label for="email">Correo electrónico</label>
+      <input id="email" type="email" placeholder="tu@email.com" required>
+      <label for="password">Contraseña</label>
+      <input id="password" type="password" placeholder="Contraseña" minlength="4" required>
+      <button type="submit">ENTRAR</button>
+    </form>
+    <div id="loginMsg" class="status hidden" aria-live="polite"></div>
+    <p class="small">Demo local: las credenciales no se envían a ningún servidor.</p>
+  </section>
+
+  <section id="launcher" class="panel hidden">
+    <h2>Bienvenido al reino</h2>
+    <p>Estado del juego: <strong class="warn">Aún no disponible para jugar</strong></p>
+    <div class="update">
+      <div><strong id="version">Versión 0.1.0</strong><br><span class="small">Puedes simular nuevas actualizaciones.</span></div>
+      <button id="updateBtn">BUSCAR ACTUALIZACIÓN</button>
+    </div>
+    <div id="updateMsg" class="status" aria-live="polite">El juego está bloqueado mientras continúa el desarrollo.</div>
+    <button id="logout" class="secondary">CERRAR SESIÓN</button>
+  </section>
+</div>
+
+<script>
+const loginForm=document.getElementById('loginForm');
+const login=document.getElementById('login');
+const launcher=document.getElementById('launcher');
+const loginMsg=document.getElementById('loginMsg');
+const updateMsg=document.getElementById('updateMsg');
+const version=document.getElementById('version');
+let patch=0;
+
+loginForm.addEventListener('submit',e=>{
+  e.preventDefault();
+  const email=document.getElementById('email').value.trim();
+  const password=document.getElementById('password').value;
+  if(!email || password.length<4) return;
+  login.classList.add('hidden');
+  launcher.classList.remove('hidden');
+  updateMsg.textContent='Sesión iniciada. El juego todavía no se puede jugar.';
+});
+
+document.getElementById('updateBtn').addEventListener('click',()=>{
+  patch++;
+  const v='0.1.'+patch;
+  version.textContent='Versión '+v;
+  updateMsg.innerHTML='<span class="ok">✓ Actualizado correctamente a '+v+'.</span> El juego sigue bloqueado hasta que publiques una versión jugable.';
+});
+
+document.getElementById('logout').addEventListener('click',()=>{
+  launcher.classList.add('hidden');
+  login.classList.remove('hidden');
+  loginForm.reset();
+  loginMsg.classList.add('hidden');
+});
+</script>
+</body>
+</html>
