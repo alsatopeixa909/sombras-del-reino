@@ -1,112 +1,263 @@
- 
-  
-<div id="message"></div>
-<div id="shopMenu">
-    <h2>⚔️ EL ARSENAL</h2>
+createEnemy(18, -25, 0xff3333, "MORDISCO");
+createMordisco(18, -25);
+function createEnemy(x, z, color, name) {
+function createMordisco(x, z) {
 
-    <div class="weapon">
-        <b>🗡️ Espada oxidada</b>
-        <p>10 daño — GRATIS</p>
-        <button onclick="comprarEspada('oxidada', 0, 10)">COMPRAR</button>
-    </div>
+    const mordisco = new THREE.Group();
 
-    <div class="weapon">
-        <b>⚔️ Espada de hierro</b>
-        <p>20 daño — 100 🪙</p>
-        <button onclick="comprarEspada('hierro', 100, 20)">COMPRAR</button>
-    </div>
-
-    <div class="weapon">
-        <b>🔥 Espada de fuego</b>
-        <p>35 daño — 500 🪙</p>
-        <button onclick="comprarEspada('fuego', 500, 35)">COMPRAR</button>
-    </div>
-
-    <div class="weapon">
-        <b>⚡ Espada eléctrica</b>
-        <p>60 daño — 2.000 🪙</p>
-        <button onclick="comprarEspada('eléctrica', 2000, 60)">COMPRAR</button>
-    </div>
-</div>
-function updateMovement() {
-    // COMPROBAR SI ESTAMOS CERCA DE LA TIENDA
-
-    const distanciaTienda = camera.position.distanceTo(
-        new THREE.Vector3(15, 3, 15)
+    // CUERPO
+    const cuerpo = new THREE.Mesh(
+        new THREE.SphereGeometry(2, 16, 16),
+        new THREE.MeshStandardMaterial({
+            color: 0x5c8f35
+        })
     );
 
-    const tienda = document.getElementById("shopMenu");
+    cuerpo.position.y = 2;
+    mordisco.add(cuerpo);
 
-    if (distanciaTienda < 12) {
-        tienda.style.display = "block";
-    } else {
-        tienda.style.display = "none";
-    }
-     #message {
-     #shopMenu {
-    display: none;
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 360px;
-    max-height: 80vh;
-    overflow-y: auto;
-    background: rgba(25, 18, 12, 0.97);
-    color: white;
-    padding: 25px;
-    border: 4px solid #d6b85c;
-    border-radius: 20px;
-    z-index: 20;
-    text-align: center;
-}
+    // OJO IZQUIERDO
+    const ojo1 = new THREE.Mesh(
+        new THREE.SphereGeometry(0.35, 12, 12),
+        new THREE.MeshStandardMaterial({
+            color: 0xffffff
+        })
+    );
 
-#shopMenu h2 {
-    color: #d6b85c;
-}
+    ojo1.position.set(-0.7, 2.7, -1.7);
+    mordisco.add(ojo1);
 
-.weapon {
-    background: rgba(255,255,255,0.08);
-    padding: 15px;
-    margin: 10px 0;
-    border-radius: 12px;
-}
+    // OJO DERECHO
+    const ojo2 = ojo1.clone();
 
-.weapon button {
-    padding: 8px 18px;
-    cursor: pointer;
-    border: none;
-    border-radius: 8px;
-    font-weight: bold;
+    ojo2.position.x = 0.7;
+    mordisco.add(ojo2);
+
+    // BOCA
+    const boca = new THREE.Mesh(
+        new THREE.BoxGeometry(1.4, 0.5, 0.3),
+        new THREE.MeshStandardMaterial({
+            color: 0x220000
+        })
+    );
+
+    boca.position.set(0, 1.4, -1.8);
+    mordisco.add(boca);
+
+    mordisco.position.set(x, 0, z);
+
+    mordisco.userData.name = "MORDISCO";
+    mordisco.userData.vida = 100;
+    mordisco.userData.daño = 15;
+
+    scene.add(mordisco);
 }
- let scene;
-let camera;
-let renderer;
-     let coins = 1000;
+function animate() {
+function updateEnemies() {
+
+    scene.traverse(function(obj) {
+
+        if (obj.userData.name === "MORDISCO") {
+
+            const dx = camera.position.x - obj.position.x;
+            const dz = camera.position.z - obj.position.z;
+
+            const distancia = Math.sqrt(dx * dx + dz * dz);
+
+            if (distancia < 20 && distancia > 2) {
+
+                obj.position.x += (dx / distancia) * 0.03;
+                obj.position.z += (dz / distancia) * 0.03;
+
+                obj.lookAt(
+                    camera.position.x,
+                    obj.position.y,
+                    camera.position.z
+                );
+            }
+        }
+
+    });
+}
+             function updateEnemies() {
+
+    scene.traverse(function(obj) {
+
+        if (obj.userData.name === "MORDISCO") {
+
+            const dx = camera.position.x - obj.position.x;
+            const dz = camera.position.z - obj.position.z;
+
+            const distancia = Math.sqrt(dx * dx + dz * dz);
+
+            if (distancia < 20 && distancia > 2) {
+
+                obj.position.x += (dx / distancia) * 0.03;
+                obj.position.z += (dz / distancia) * 0.03;
+
+                obj.lookAt(
+                    camera.position.x,
+                    obj.position.y,
+                    camera.position.z
+                );
+            }
+        }
+
+    });
+}updateMovement();
+             updateEnemies();
+             if (distancia < 20 && distancia > 2) {
+              obj.position.x += (dx / distancia) * 0.03;
+obj.position.z += (dz / distancia) * 0.03;
+              if (distancia <= 2) {
+
+    document.getElementById("message").style.display = "block";
+
+    document.getElementById("message").innerText =
+        "👹 ¡Mordisco te ha atacado! -15 ❤️";
+
+    setTimeout(function() {
+        document.getElementById("message").style.display = "none";
+    }, 1000);
+}
+               let coins = 1000;
 let weaponDamage = 10;
 let weaponName = "Espada oxidada";
-     function createShop() {function comprarEspada(nombre, precio, daño) {
+               let playerHealth = 100;
+let maxHealth = 100;
+               <div id="hud">
+                <div id="hud">
+    Nivel: 0 | 🪙 Monedas: 1000 | ⚔️ Espada oxidada (10 daño)<br>
+    ❤️ Vida: 100 / 100
+</div>
+if (distancia <= 2) {
+ playerHealth -= 15;
 
-    if (coins >= precio) {
+if (playerHealth < 0) {
+    playerHealth = 0;
+}
 
-        coins -= precio;
-        weaponDamage = daño;
-        weaponName = nombre;
+document.getElementById("hud").innerHTML =
+    "Nivel: 0 | 🪙 Monedas: " + coins +
+    " | ⚔️ " + weaponName + " (" + weaponDamage + " daño)<br>" +
+    "❤️ Vida: " + playerHealth + " / " + maxHealth;
+ if (distancia <= 2) {
+  if (distancia <= 2) {
 
-        document.getElementById("hud").innerText =
+    const ahora = Date.now();
+
+    if (!obj.userData.ultimoAtaque ||
+        ahora - obj.userData.ultimoAtaque > 1000) {
+
+        obj.userData.ultimoAtaque = ahora;
+
+        playerHealth -= obj.userData.daño;
+
+        if (playerHealth < 0) {
+            playerHealth = 0;
+        }
+
+        document.getElementById("hud").innerHTML =
             "Nivel: 0 | 🪙 Monedas: " + coins +
             " | ⚔️ " + weaponName +
-            " (" + weaponDamage + " daño)";
+            " (" + weaponDamage + " daño)<br>" +
+            "❤️ Vida: " + playerHealth + " / " + maxHealth;
 
-        alert("⚔️ ¡Has comprado " + nombre + "!");
+        document.getElementById("message").style.display = "block";
 
-    } else {
+        document.getElementById("message").innerText =
+            "👹 ¡Mordisco te ha atacado! -" +
+            obj.userData.daño + " ❤️";
 
-        alert("🪙 No tienes suficientes monedas.");
-
+        setTimeout(function() {
+            document.getElementById("message").style.display = "none";
+        }, 700);
     }
-}<div id="hud">
-    Nivel: 0 | 🪙 Monedas: 0
-</div><div id="hud">
-    Nivel: 0 | 🪙 Monedas: 1000 | ⚔️ Espada oxidada (10 daño)
-</div>
+}
+         mordisco.userData.daño = 15;mordisco.userData.maxVida = 100;
+mordisco.userData.vida = 100;
+         const keys = {};
+         const raycaster = new THREE.Raycaster();
+         renderer.domElement.addEventListener(
+    "click",
+    function() {
+        renderer.domElement.requestPointerLock();
+    }
+);
+         renderer.domElement.addEventListener(
+    "click",
+    function() {
+
+        if (document.pointerLockElement !== renderer.domElement) {
+            renderer.domElement.requestPointerLock();
+            return;
+        }
+
+        atacar();
+    }
+);
+         function updateMovement() {
+         function atacar() {
+
+    raycaster.setFromCamera(
+        new THREE.Vector2(0, 0),
+        camera
+    );
+
+    const enemigos = [];
+
+    scene.traverse(function(obj) {
+        if (obj.userData.name === "MORDISCO") {
+            enemigos.push(obj);
+        }
+    });
+
+    const impactos = raycaster.intersectObjects(
+        enemigos,
+        true
+    );
+
+    if (impactos.length > 0) {
+
+        let enemigo = impactos[0].object;
+
+        while (
+            enemigo.parent &&
+            enemigo.userData.name !== "MORDISCO"
+        ) {
+            enemigo = enemigo.parent;
+        }
+
+        if (enemigo.userData.name === "MORDISCO") {
+
+            enemigo.userData.vida -= weaponDamage;
+
+            document.getElementById("message").style.display = "block";
+
+            document.getElementById("message").innerText =
+                "⚔️ ¡Golpe! -" + weaponDamage + " ❤️";
+
+            setTimeout(function() {
+                document.getElementById("message").style.display = "none";
+            }, 500);
+
+            if (enemigo.userData.vida <= 0) {
+
+                scene.remove(enemigo);
+
+                coins += 25;
+
+                document.getElementById("hud").innerHTML =
+                    "Nivel: 0 | 🪙 Monedas: " + coins +
+                    " | ⚔️ " + weaponName +
+                    " (" + weaponDamage + " daño)<br>" +
+                    "❤️ Vida: " + playerHealth +
+                    " / " + maxHealth;
+
+                document.getElementById("message").innerText =
+                    "💀 ¡Mordisco derrotado! +25 🪙";
+            }
+        }
+    }
+}
+         
