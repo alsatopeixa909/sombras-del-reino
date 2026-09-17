@@ -1,5 +1,6 @@
  
   
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -8,208 +9,547 @@
 <title>Sombras del Reino</title>
 
 <style>
-* { box-sizing: border-box; }
-
-body {
-  margin: 0;
-  overflow: hidden;
-  background: #10150f;
-  font-family: Arial, sans-serif;
-  color: white;
+html, body {
+    margin: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: #000;
+    font-family: Arial, sans-serif;
 }
 
 #game {
-  width: 100vw;
-  height: 100vh;
-  position: relative;
-  overflow: hidden;
-  background: #26351f;
-}
-
-#title {
-  position: absolute;
-  top: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  font-size: 32px;
-  font-weight: bold;
-  text-shadow: 0 3px 8px black;
-  z-index: 10;
-}
-
-#map {
-  position: absolute;
-  width: 1100px;
-  height: 800px;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  background: #526b3b;
-  border: 8px solid #252b20;
-  border-radius: 35px;
-  box-shadow: 0 0 50px #000;
-}
-
-.path {
-  position: absolute;
-  background: #a58a5b;
-  border-radius: 50px;
-}
-
-.vertical {
-  width: 90px;
-  height: 700px;
-  left: 505px;
-  top: 50px;
-}
-
-.horizontal {
-  width: 900px;
-  height: 90px;
-  left: 100px;
-  top: 350px;
-}
-
-.zone {
-  position: absolute;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  font-weight: bold;
-  font-size: 22px;
-  text-shadow: 0 2px 5px black;
-  border: 4px solid rgba(0,0,0,.35);
-  box-shadow: 0 8px 20px rgba(0,0,0,.4);
-}
-
-#spawn {
-  width: 230px;
-  height: 170px;
-  left: 435px;
-  top: 315px;
-  border-radius: 50%;
-  background: #68745d;
-  border-color: #d5c58b;
-  font-size: 26px;
-}
-
-#forest {
-  width: 260px;
-  height: 210px;
-  left: 45px;
-  top: 45px;
-  border-radius: 35px;
-  background: #1e4725;
-}
-
-#ruins {
-  width: 260px;
-  height: 210px;
-  right: 45px;
-  top: 45px;
-  border-radius: 35px;
-  background: #4b4037;
-}
-
-#caves {
-  width: 260px;
-  height: 210px;
-  left: 45px;
-  bottom: 45px;
-  border-radius: 35px;
-  background: #24252a;
-}
-
-#lake {
-  width: 260px;
-  height: 210px;
-  right: 45px;
-  bottom: 45px;
-  border-radius: 50%;
-  background: #245a70;
-}
-
-#arena {
-  width: 180px;
-  height: 120px;
-  left: 460px;
-  bottom: 35px;
-  border-radius: 50%;
-  background: #704a35;
-}
-
-.tree {
-  position: absolute;
-  font-size: 38px;
-}
-
-.enemy {
-  position: absolute;
-  font-size: 32px;
-}
-
-#player {
-  position: absolute;
-  left: 535px;
-  top: 370px;
-  font-size: 40px;
-  z-index: 5;
+    width: 100%;
+    height: 100%;
 }
 
 #info {
-  position: absolute;
-  bottom: 20px;
-  left: 20px;
-  z-index: 20;
-  background: rgba(0,0,0,.7);
-  padding: 12px 18px;
-  border-radius: 12px;
+    position: fixed;
+    top: 15px;
+    left: 15px;
+    z-index: 10;
+    padding: 12px 18px;
+    background: rgba(0,0,0,.65);
+    color: white;
+    border-radius: 10px;
+}
+
+#start {
+    position: fixed;
+    inset: 0;
+    z-index: 20;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    background: rgba(0,0,0,.75);
+    color: white;
+    text-align: center;
+}
+
+#start button {
+    padding: 15px 30px;
+    font-size: 20px;
+    cursor: pointer;
+    border-radius: 10px;
+    border: 0;
+}
+
+#crosshair {
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    width: 12px;
+    height: 12px;
+    margin-left: -6px;
+    margin-top: -6px;
+    z-index: 5;
+    color: white;
+    font-size: 20px;
 }
 </style>
 </head>
 
 <body>
 
-<div id="game">
-
-<div id="title">⚔️ SOMBRAS DEL REINO ⚔️</div>
-
-<div id="map">
-
-<div class="path vertical"></div>
-<div class="path horizontal"></div>
-
-<div id="forest" class="zone">🌲 BOSQUE</div>
-<div id="ruins" class="zone">🏚️ RUINAS</div>
-<div id="caves" class="zone">🪨 CUEVAS</div>
-<div id="lake" class="zone">🌊 LAGO</div>
-<div id="arena" class="zone">⚔️ ARENA</div>
-<div id="spawn" class="zone">🏕️ SPAWN</div>
-
-<div id="player">🧙</div>
-
-<div class="tree" style="left:80px;top:90px;">🌲</div>
-<div class="tree" style="left:180px;top:110px;">🌲</div>
-<div class="tree" style="left:100px;top:180px;">🌳</div>
-<div class="tree" style="left:230px;top:190px;">🌲</div>
-
-<div class="enemy" style="left:180px;top:250px;">👾</div>
-<div class="enemy" style="left:300px;top:150px;">👾</div>
-<div class="enemy" style="left:760px;top:180px;">👹</div>
-<div class="enemy" style="left:820px;top:260px;">💀</div>
-
-</div>
+<div id="game"></div>
 
 <div id="info">
-Nivel: <b>0</b> ♾️
-&nbsp; | &nbsp;
-🪙 Monedas: 0
-&nbsp; | &nbsp;
-⚔️ Explora y lucha
+    ⚔️ SOMBRAS DEL REINO<br>
+    Nivel: 0 | 🪙 Monedas: 0<br>
+    WASD = mover | Ratón = mirar
 </div>
 
+<div id="crosshair">+</div>
+
+<div id="start">
+    <h1>⚔️ SOMBRAS DEL REINO ⚔️</h1>
+    <p>Explora el reino y derrota a los enemigos</p>
+    <button onclick="startGame()">ENTRAR AL REINO</button>
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+
+<script>
+
+let scene;
+let camera;
+let renderer;
+
+let keys = {};
+let yaw = 0;
+let pitch = 0;
+let playing = false;
+
+function startGame() {
+
+    document.getElementById("start").style.display = "none";
+
+    playing = true;
+
+    document.body.requestPointerLock();
+
+    createWorld();
+}
+
+function createWorld() {
+
+    scene = new THREE.Scene();
+
+    scene.background = new THREE.Color(0x87b5d6);
+
+    scene.fog = new THREE.Fog(0x87b5d6, 30, 180);
+
+    camera = new THREE.PerspectiveCamera(
+        75,
+        window.innerWidth / window.innerHeight,
+        0.1,
+        500
+    );
+
+    camera.position.set(0, 2, 20);
+
+    renderer = new THREE.WebGLRenderer({
+        antialias: true
+    });
+
+    renderer.setSize(
+        window.innerWidth,
+        window.innerHeight
+    );
+
+    document.getElementById("game").appendChild(renderer.domElement);
+
+    // LUZ
+    const sunlight = new THREE.DirectionalLight(
+        0xffffff,
+        2
+    );
+
+    sunlight.position.set(50, 100, 50);
+
+    scene.add(sunlight);
+
+    const ambient = new THREE.AmbientLight(
+        0xffffff,
+        0.5
+    );
+
+    scene.add(ambient);
+
+    // SUELO
+    const groundGeometry =
+        new THREE.PlaneGeometry(400, 400);
+
+    const groundMaterial =
+        new THREE.MeshStandardMaterial({
+            color: 0x426b32
+        });
+
+    const ground =
+        new THREE.Mesh(
+            groundGeometry,
+            groundMaterial
+        );
+
+    ground.rotation.x = -Math.PI / 2;
+
+    scene.add(ground);
+
+    // BOSQUE
+    for (let i = 0; i < 70; i++) {
+
+        let x = (Math.random() - 0.5) * 180;
+        let z = (Math.random() - 0.5) * 180;
+
+        // dejamos libre la zona inicial
+        if (Math.abs(x) < 15 && Math.abs(z) < 15)
+            continue;
+
+        createTree(x, z);
+    }
+
+    // CAMINO
+    createPath(0, 0, 100, 8);
+
+    // RUINAS
+    createRuins(60, -50);
+
+    // CUEVAS
+    createCave(-65, -50);
+
+    // LAGO
+    createLake(65, 55);
+
+    // ARENA
+    createArena(-60, 55);
+
+    // ENEMIGOS
+    createEnemy(15, -25, "👾 MORDISCO");
+    createEnemy(-20, -35, "👾 MORDISCO");
+    createEnemy(30, -55, "👹 GUARDIÁN");
+
+    animate();
+}
+
+function createTree(x, z) {
+
+    const trunkGeometry =
+        new THREE.CylinderGeometry(
+            0.5,
+            0.7,
+            5
+        );
+
+    const trunkMaterial =
+        new THREE.MeshStandardMaterial({
+            color: 0x5a351d
+        });
+
+    const trunk =
+        new THREE.Mesh(
+            trunkGeometry,
+            trunkMaterial
+        );
+
+    trunk.position.set(x, 2.5, z);
+
+    scene.add(trunk);
+
+    const leavesGeometry =
+        new THREE.ConeGeometry(
+            3,
+            7,
+            8
+        );
+
+    const leavesMaterial =
+        new THREE.MeshStandardMaterial({
+            color: 0x174d22
+        });
+
+    const leaves =
+        new THREE.Mesh(
+            leavesGeometry,
+            leavesMaterial
+        );
+
+    leaves.position.set(x, 7, z);
+
+    scene.add(leaves);
+}
+
+function createPath(x, z, length, width) {
+
+    const geometry =
+        new THREE.BoxGeometry(
+            width,
+            0.1,
+            length
+        );
+
+    const material =
+        new THREE.MeshStandardMaterial({
+            color: 0x9b8255
+        });
+
+    const path =
+        new THREE.Mesh(
+            geometry,
+            material
+        );
+
+    path.position.set(x, 0.05, z);
+
+    scene.add(path);
+}
+
+function createRuins(x, z) {
+
+    for (let i = 0; i < 8; i++) {
+
+        const geometry =
+            new THREE.BoxGeometry(
+                5,
+                5 + Math.random() * 4,
+                5
+            );
+
+        const material =
+            new THREE.MeshStandardMaterial({
+                color: 0x68645c
+            });
+
+        const wall =
+            new THREE.Mesh(
+                geometry,
+                material
+            );
+
+        wall.position.set(
+            x + (Math.random()-0.5)*20,
+            2.5,
+            z + (Math.random()-0.5)*20
+        );
+
+        scene.add(wall);
+    }
+}
+
+function createCave(x, z) {
+
+    const geometry =
+        new THREE.SphereGeometry(
+            12,
+            16,
+            16
+        );
+
+    const material =
+        new THREE.MeshStandardMaterial({
+            color: 0x202329
+        });
+
+    const cave =
+        new THREE.Mesh(
+            geometry,
+            material
+        );
+
+    cave.scale.y = 0.7;
+
+    cave.position.set(x, 8, z);
+
+    scene.add(cave);
+
+    const entrance =
+        new THREE.Mesh(
+            new THREE.CircleGeometry(5, 32),
+            new THREE.MeshBasicMaterial({
+                color: 0x050505
+            })
+        );
+
+    entrance.position.set(x, 5, z + 11);
+
+    entrance.rotation.x = -Math.PI / 2;
+
+    scene.add(entrance);
+}
+
+function createLake(x, z) {
+
+    const geometry =
+        new THREE.CircleGeometry(
+            18,
+            40
+        );
+
+    const material =
+        new THREE.MeshStandardMaterial({
+            color: 0x2385b5,
+            roughness: 0.2
+        });
+
+    const lake =
+        new THREE.Mesh(
+            geometry,
+            material
+        );
+
+    lake.rotation.x = -Math.PI / 2;
+
+    lake.position.set(x, 0.08, z);
+
+    scene.add(lake);
+}
+
+function createArena(x, z) {
+
+    const geometry =
+        new THREE.CylinderGeometry(
+            16,
+            16,
+            0.5,
+            32
+        );
+
+    const material =
+        new THREE.MeshStandardMaterial({
+            color: 0x71452e
+        });
+
+    const arena =
+        new THREE.Mesh(
+            geometry,
+            material
+        );
+
+    arena.position.set(x, 0.25, z);
+
+    scene.add(arena);
+}
+
+function createEnemy(x, z, name) {
+
+    const geometry =
+        new THREE.SphereGeometry(
+            1.5,
+            16,
+            16
+        );
+
+    const material =
+        new THREE.MeshStandardMaterial({
+            color: 0x8b2020
+        });
+
+    const enemy =
+        new THREE.Mesh(
+            geometry,
+            material
+        );
+
+    enemy.position.set(
+        x,
+        1.5,
+        z
+    );
+
+    enemy.userData.name = name;
+
+    scene.add(enemy);
+}
+
+document.addEventListener(
+    "keydown",
+    function(event) {
+        keys[event.key.toLowerCase()] = true;
+    }
+);
+
+document.addEventListener(
+    "keyup",
+    function(event) {
+        keys[event.key.toLowerCase()] = false;
+    }
+);
+
+document.addEventListener(
+    "mousemove",
+    function(event) {
+
+        if (!playing) return;
+
+        if (document.pointerLockElement !== document.body)
+            return;
+
+        yaw -= event.movementX * 0.002;
+
+        pitch -= event.movementY * 0.002;
+
+        pitch = Math.max(
+            -1.4,
+            Math.min(1.4, pitch)
+        );
+    }
+);
+
+function movePlayer() {
+
+    if (!playing) return;
+
+    const speed = 0.18;
+
+    let forward = 0;
+    let side = 0;
+
+    if (keys["w"] || keys["arrowup"])
+        forward += 1;
+
+    if (keys["s"] || keys["arrowdown"])
+        forward -= 1;
+
+    if (keys["a"] || keys["arrowleft"])
+        side -= 1;
+
+    if (keys["d"] || keys["arrowright"])
+        side += 1;
+
+    camera.position.x +=
+        Math.sin(yaw) * forward * speed;
+
+    camera.position.z +=
+        Math.cos(yaw) * forward * speed;
+
+    camera.position.x +=
+        Math.cos(yaw) * side * speed;
+
+    camera.position.z -=
+        Math.sin(yaw) * side * speed;
+
+    camera.position.y = 2;
+}
+
+function animate() {
+
+    requestAnimationFrame(animate);
+
+    movePlayer();
+
+    camera.rotation.order = "YXZ";
+
+    camera.rotation.y = yaw;
+
+    camera.rotation.x = pitch;
+
+    renderer.render(
+        scene,
+        camera
+    );
+}
+
+window.addEventListener(
+    "resize",
+    function() {
+
+        if (!camera || !renderer)
+            return;
+
+        camera.aspect =
+            window.innerWidth /
+            window.innerHeight;
+
+        camera.updateProjectionMatrix();
+
+        renderer.setSize(
+            window.innerWidth,
+            window.innerHeight
+        );
+    }
+);
+
+</script>
 
 </body>
 </html>
