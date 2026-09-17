@@ -1,117 +1,13 @@
-camera.position.set(0, 3, 15);
-camera.position.set(0, 3, 15);
-spawn.position.set(0, 0.25, 15);
-const spawnRing = new THREE.Mesh(
-    new THREE.RingGeometry(5, 7, 32),
-    new THREE.MeshStandardMaterial({
-        color: 0xd6b85c,
-        side: THREE.DoubleSide
-    })
-);
+let otherPlayers = [];
+function crearJugador(x, z) {
+    const jugador = createPlayer(x, z);
 
-spawnRing.rotation.x = -Math.PI / 2;
-spawnRing.position.set(0, 0.52, 15);
+    otherPlayers.push(jugador);
 
-scene.add(spawnRing);
-function createWorld() {
-function createPlayer(x, z) {
-
-    const player = new THREE.Group();
-
-    // CUERPO
-    const cuerpo = new THREE.Mesh(
-        new THREE.BoxGeometry(1.5, 2, 1),
-        new THREE.MeshStandardMaterial({
-            color: 0x3366cc
-        })
-    );
-
-    cuerpo.position.y = 2.5;
-    player.add(cuerpo);
-
-    // CABEZA
-    const cabeza = new THREE.Mesh(
-        new THREE.SphereGeometry(0.75, 16, 16),
-        new THREE.MeshStandardMaterial({
-            color: 0xf0b27a
-        })
-    );
-
-    cabeza.position.y = 4;
-    player.add(cabeza);
-
-    // PIERNA IZQUIERDA
-    const pierna1 = new THREE.Mesh(
-        new THREE.BoxGeometry(0.55, 1.5, 0.6),
-        new THREE.MeshStandardMaterial({
-            color: 0x222244
-        })
-    );
-
-    pierna1.position.set(-0.4, 0.75, 0);
-    player.add(pierna1);
-
-    // PIERNA DERECHA
-    const pierna2 = pierna1.clone();
-
-    pierna2.position.x = 0.4;
-    player.add(pierna2);
-
-    player.position.set(x, 0, z);
-
-    scene.add(player);
-
-    return player;
+    return jugador;
 }
 camera.position.set(0, 3, 15);
-createPlayer(0, 15);
-player.position.set(x, 0, z);
-// BRAZO IZQUIERDO
-const brazo1 = new THREE.Mesh(
-    new THREE.BoxGeometry(0.5, 1.8, 0.5),
-    new THREE.MeshStandardMaterial({
-        color: 0x3366cc
-    })
-);
+crearJugador(5, 10);
 
-brazo1.position.set(-1, 2.5, 0);
-player.add(brazo1);
-
-// BRAZO DERECHO
-const brazo2 = brazo1.clone();
-
-brazo2.position.x = 1;
-player.add(brazo2);
-// PELO
-const pelo = new THREE.Mesh(
-    new THREE.SphereGeometry(0.78, 16, 16),
-    new THREE.MeshStandardMaterial({
-        color: 0x2b160b
-    })
-);
-
-pelo.scale.y = 0.55;
-pelo.position.set(0, 4.45, 0);
-player.add(pelo);
-
-// OJO IZQUIERDO
-const ojo1 = new THREE.Mesh(
-    new THREE.SphereGeometry(0.12, 10, 10),
-    new THREE.MeshStandardMaterial({
-        color: 0x111111
-    })
-);
-
-ojo1.position.set(-0.28, 4.05, -0.68);
-player.add(ojo1);
-
-// OJO DERECHO
-const ojo2 = ojo1.clone();
-
-ojo2.position.x = 0.28;
-player.add(ojo2);
-const keys = {};
-let otherPlayers = [];
-createPlayer(0, 15);
 
          
